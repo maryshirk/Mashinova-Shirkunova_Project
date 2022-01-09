@@ -5,8 +5,9 @@ import copy
 
 pygame.init()
 clock = pygame.time.Clock()
+
 size = 900, 600
-screen = pygame.display.set_mode(size)
+screen = pygame.display.set_mode(size) # размер экрана
 pygame.display.set_caption('Морской бой')
 block_size = 30
 left_margin = 90
@@ -27,13 +28,7 @@ dotted_set = set()
 destroyed_computer_ships = []
 
 
-def print_text(message, x, y, font_color=(0, 0, 0), font_type='myfont.ttf', font_size=30):
-    font_type = pygame.font.Font(font_type, font_size)
-    text = font_type.render(message, True, font_color)
-    screen.blit(text, (x, y))
-
-
-class Button2:
+class ButtonMenuScr:  # кнопки в меню
     def __init__(self, width, height, inactive_color, active_color, action=None, arg=None, font=30):
         self.width = width
         self.height = height
@@ -46,7 +41,6 @@ class Button2:
     def draw(self, x, y, message):
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
-        rect = pygame.Rect(x, y, self.width, self.height)
         pygame.draw.rect(screen, self.inactive_color, (x, y, self.width, self.height), 1)
 
         if x < mouse[0] < x + self.width:
@@ -54,8 +48,8 @@ class Button2:
                 pygame.draw.rect(screen, self.active_color, (x, y, self.width, self.height))
 
                 if click[0] == 1:
-                    button_sound = pygame.mixer.Sound('button.wav')
-                    pygame.mixer.Sound.play(button_sound)
+                    #  button_sound = pygame.mixer.Sound('button.wav')
+                    #  pygame.mixer.Sound.play(button_sound)
                     pygame.time.delay(300)
                     if self.action is not None:
                         if self.arg is not None:
@@ -65,6 +59,12 @@ class Button2:
         pygame.draw.rect(screen, self.inactive_color, (x, y, self.width, self.height), 1)
 
         print_text(message=message, x=x + 10, y=y + 10, font_size=self.font)
+
+
+def print_text(message, x, y, font_color=(0, 0, 0), font_type='myfont.ttf', font_size=30):
+    font_type = pygame.font.Font(font_type, font_size)
+    text = font_type.render(message, True, font_color)
+    screen.blit(text, (x, y))
 
 
 class Button:
@@ -130,10 +130,10 @@ class Board:
     # создание поля 1 игрока
     def drawer_field_2(self):
         for i in range(11):
-            # Horisontal
+            # горизонталь
             pygame.draw.line(screen, pygame.Color('#0000e6'), (left_margin, upper_margin + i * block_size),
                              (left_margin + 10 * block_size, upper_margin + i * block_size), 1)
-            # Vertical
+            # вертикаль
             pygame.draw.line(screen, pygame.Color('#0000e6'), (left_margin + i * block_size, upper_margin),
                              (left_margin + i * block_size, upper_margin + 10 * block_size), 1)
 
@@ -145,10 +145,8 @@ class Board:
                 num_ver_height = num_ver.get_height()
                 letters_hor_width = letters_hor.get_width()
 
-                # Ver num grid1
                 screen.blit(num_ver, (left_margin - (block_size // 2 + num_ver_width // 2),
                                       upper_margin + i * block_size + (block_size // 2 - num_ver_height // 2)))
-                # Hor letters grid1
                 screen.blit(letters_hor, (left_margin + i * block_size + (block_size //
                                                                           2 - letters_hor_width // 2),
                                           upper_margin + 10 * block_size))
@@ -156,11 +154,9 @@ class Board:
     # создание поля 2 игрока
     def drawer_field_1(self):
         for i in range(11):
-            # Horisontal
             pygame.draw.line(screen, pygame.Color('#0000e6'), (left_margin + 15 * block_size, upper_margin +
                                                                i * block_size),
                              (left_margin + 25 * block_size, upper_margin + i * block_size), 1)
-            # Vertical
             pygame.draw.line(screen, pygame.Color('#0000e6'), (left_margin + (i + 15) * block_size, upper_margin),
                              (left_margin + (i + 15) * block_size, upper_margin + 10 * block_size), 1)
 
@@ -172,11 +168,9 @@ class Board:
                 num_ver_height = num_ver.get_height()
                 letters_hor_width = letters_hor.get_width()
 
-                # Ver num grid2
                 screen.blit(num_ver, (left_margin - (block_size // 2 + num_ver_width // 2) + 15 *
                                       block_size,
                                       upper_margin + i * block_size + (block_size // 2 - num_ver_height // 2)))
-                # Hor letters grid2
                 screen.blit(letters_hor, (left_margin + i * block_size + (block_size // 2 -
                                                                           letters_hor_width // 2) + 15 * block_size,
                                           upper_margin + 10 * block_size))
@@ -257,11 +251,9 @@ def draw_ships(ships_coordinates_list):  # отрисовка корабля
         ship = sorted(elem)
         x_start = ship[0][0]
         y_start = ship[0][1]
-        # Vert
         if len(ship) > 1 and ship[0][0] == ship[1][0]:
             ship_width = block_size
             ship_height = block_size * len(ship)
-        # Hor and 1block
         else:
             ship_width = block_size * len(ship)
             ship_height = block_size
@@ -339,12 +331,8 @@ def update_dotted_and_hit_sets(fired_block, computer_turn, diagonal_only=True):
     x, y = fired_block
     a = 15 * computer_turn
     b = 11 + 15 * computer_turn
-    # Adds a block hit by computer to the set of his hits to later remove
-    # them from the set of blocks available for it to shoot from
     hit_blocks_for_computer_not_to_shoot.add(fired_block)
-    # Adds hit blocks on either grid1 (x:1-10) or grid2 (x:16-25)
     hit_blocks.add(fired_block)
-    # Adds blocks in diagonal or all-around a block to repsective sets
     for i in range(-1, 2):
         for j in range(-1, 2):
             if (not diagonal_only or i != 0 and j != 0) and a < x + i < b and 0 < y + j < 11:
@@ -385,20 +373,19 @@ def check_hit_or_miss(fired_block, opponents_ships_list, computer_turn, opponent
     for elem in opponents_ships_list:
         diagonal_only = True
         if fired_block in elem:
-            # This is to put dots before and after a destroyed ship
-            # and to draw computer's destroyed ships (which are hidden until destroyed)
+            # для отрисовки точки и уничтоженных кораблей
             ind = opponents_ships_list.index(elem)
             if len(elem) == 1:
                 diagonal_only = False
             update_dotted_and_hit_sets(
                 fired_block, computer_turn, diagonal_only)
             elem.remove(fired_block)
-            # This is to check who loses - if ships_set is empty
+            # проверка выиграл или нет
             opponents_ships_set.discard(fired_block)
             if computer_turn:
                 last_hits_list.append(fired_block)
                 update_around_last_computer_hit(fired_block, True)
-            # If the ship is destroyed
+            # если корабль уничтожен
             if not elem:
                 update_destroyed_ships(
                     ind, computer_turn, opponents_ships_list_original_copy)
@@ -406,7 +393,6 @@ def check_hit_or_miss(fired_block, opponents_ships_list, computer_turn, opponent
                     last_hits_list.clear()
                     around_last_computer_hit_set.clear()
                 else:
-                    # Add computer's destroyed ship to the list to draw it (computer ships are hidden)
                     destroyed_computer_ships.append(computer.ships[ind])
             return True
     add_missed_block_to_dotted_set(fired_block)
@@ -433,27 +419,6 @@ def show_message_at_rect_center(message, rect, which_font=font, color=(255, 0, 0
 
 def check_ships_numbers(ship, num_ships_list):
     return (5 - len(ship)) > num_ships_list[len(ship)-1]
-
-
-def show_menu():  # игровое меню
-    menu_background = pygame.image.load('game_menu.png')
-
-    start_button = Button2(260, 60, '#0000f5', (255, 255, 255), action=start_game, font=40)
-    about_button = Button2(260, 60, (0, 0, 0, 0), (255, 255, 255, 0))
-    show = True
-
-    while show:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-
-        screen.blit(menu_background, (0, 0))
-        start_button.draw(350, 170, 'начать игру')
-        about_button.draw(700, 550, '')
-
-        pygame.display.update()
-        clock.tick(60)
 
 
 computer = Ships(0)
@@ -647,8 +612,8 @@ def game():
                              11 * block_size, 14 * block_size, 4 * block_size)
     message_rect_human = (left_margin + 15 * block_size, upper_margin +
                           11 * block_size, 10 * block_size, 4 * block_size)
-    next_button = Button2(260, 60, '#0000f5', (255, 255, 255), action=next_level, font=40)
-    again_button = Button2(260, 60, '#0000f5', (255, 255, 255), action=start_game, font=40)
+    next_button = ButtonMenuScr(260, 60, '#0000f5', (255, 255, 255), action=next_level, font=40)
+    again_button = ButtonMenuScr(260, 60, '#0000f5', (255, 255, 255), action=start_game, font=40)
 
 
     draw_ships(destroyed_computer_ships)
@@ -705,7 +670,26 @@ def next_level():
     pygame.display.update()
 
 
+class Menu:  # игровое меню
+    def __init__(self):
+        menu_background = pygame.image.load('game_menu.png')
+
+        start_button = ButtonMenuScr(260, 60, '#0000f5', (255, 255, 255), action=start_game, font=40)
+        about_button = ButtonMenuScr(260, 60, (0, 0, 0, 0), (255, 255, 255, 0))
+
+        screen.blit(menu_background, (0, 0))
+        start_button.draw(350, 170, 'начать игру')
+        about_button.draw(700, 550, '')
+
+        pygame.display.update()
+        clock.tick(60)
+
+
 if __name__ == '__main__':
-    show_menu()
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        menu = Menu()
     pygame.quit()
-    quit()
