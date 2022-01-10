@@ -29,7 +29,7 @@ destroyed_computer_ships = []
 
 
 class ButtonMenuScr:  # кнопки в меню
-    def __init__(self, width, height, inactive_color, active_color, action=None, arg=None, font=30):
+    def __init__(self, width, height, inactive_color, active_color, action=None, arg=None, font=30) -> object:
         self.width = width
         self.height = height
         self.inactive_color = inactive_color
@@ -61,7 +61,7 @@ class ButtonMenuScr:  # кнопки в меню
         print_text(message=message, x=x + 10, y=y + 10, font_size=self.font)
 
 
-def print_text(message, x, y, font_color=(0, 0, 0), font_type='myfont.ttf', font_size=30):
+def print_text(message, x, y, font_color=(0, 0, 0), font_type='assets/myfont.ttf', font_size=30):
     font_type = pygame.font.Font(font_type, font_size)
     text = font_type.render(message, True, font_color)
     screen.blit(text, (x, y))
@@ -661,7 +661,7 @@ def game():
     if not human_ships_set:
         show_message_at_rect_center(
             "ВЫ ПРОИГРАЛИ!", (0, 0, size[0], size[1]), game_over_font)
-        again_button.draw(400, 300, 'Сначала')
+        again_button.draw(400, 400, 'Сначала')
     pygame.display.update()
 
 
@@ -672,7 +672,7 @@ def next_level():
 
 class Menu:  # игровое меню
     def __init__(self):
-        menu_background = pygame.image.load('game_menu.png')
+        menu_background = pygame.image.load('assets/game_menu.png')
 
         start_button = ButtonMenuScr(260, 60, '#0000f5', (255, 255, 255), action=start_game, font=40)
         about_button = ButtonMenuScr(260, 60, (0, 0, 0, 0), (255, 255, 255, 0))
