@@ -29,7 +29,7 @@ destroyed_computer_ships = []
 
 
 class ButtonMenuScr:  # кнопки в меню
-    def __init__(self, width, height, inactive_color, active_color, action=None, arg=None, font=30) -> object:
+    def __init__(self, width, height, inactive_color, active_color, action=None, arg=None, font=30):
         self.width = width
         self.height = height
         self.inactive_color = inactive_color
