@@ -582,7 +582,6 @@ class Let(pygame.sprite.Sprite):
         else:
             self.kill()
 
-
 class SecondLevel:
     def __init__(self):
         self.water = pygame.image.load('assets/water_texture.png')
