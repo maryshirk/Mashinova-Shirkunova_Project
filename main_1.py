@@ -587,43 +587,52 @@ class SecondLevel:
     def __init__(self):
         self.water = pygame.image.load('assets/water_texture.png')
         self.background1 = pygame.image.load('assets/list.jpg')
-        self.ship = pygame.image.load('assets/ship_png.png')
-        self.ship = pygame.transform.scale(self.ship, (240, 150))
-        self.shipYpos = 0
-        self.ship_rect = self.ship.get_rect(center=(10, self.shipYpos))
-        pygame.time.set_timer(pygame.USEREVENT, 4000)
+        self.waterXpos = 0
+        self.game_over_bg = pygame.image.load('assets/GameOver.png')
 
     def game(self):
+        ship = pygame.image.load('assets/ship_png.png')
+        ship = pygame.transform.scale(ship, (230, 150))
+        ship_rect = ship.get_rect(center=(140, 0))
+        pygame.time.set_timer(pygame.USEREVENT, 4000)
         running = True
-        self.waterXpos = 0
         gravity = 2
         W = -200
         group = pygame.sprite.Group()
         group.add(Let(800, random.randint(1, 4), 'assets/island.png'))
-        print(len(group))
 
         def draw_water():
             screen.blit(self.water, (self.waterXpos, 445))
             screen.blit(self.water, (self.waterXpos + 288, 445))
 
+        def collide_isl():
+            for isl in group:
+                if ship_rect.collidepoint(isl.rect.center):
+                    return 1
+
         while running:
             screen.fill((0, 0, 0))
             screen.blit(self.background1, (0, 0))
-            screen.blit(self.ship, (10, self.shipYpos))
             group.draw(screen)
+            screen.blit(ship, ship_rect)
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        self.shipYpos -= 70
+                        ship_rect.y -= 70
                 if event.type == pygame.USEREVENT:
                     group.add(Let(900, random.randint(1, 4), 'assets/island.png'))
-            if self.shipYpos > 310:
-                self.shipYpos = 320
+            a = collide_isl()
+            if a:
+                self.game_over()
+            if ship_rect.y > 310:
+                ship_rect.y = 320
+            elif ship_rect.y < -10:
+                ship_rect.y = 10
             else:
-                self.shipYpos += gravity
+                ship_rect.y += gravity
             self.waterXpos -= 5  # скорость текстуры воды
             draw_water()
             if self.waterXpos <= -288:
@@ -632,6 +641,17 @@ class SecondLevel:
             pygame.display.update()
             mainClock.tick(60)
             group.update(W)
+
+    def game_over(self):
+        running = True
+        while running:
+            screen.fill((0, 0, 0))
+            screen.blit(self.game_over_bg, (0, 0))
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+                    sys.exit()
+            pygame.display.update()
 
 
 def game():
