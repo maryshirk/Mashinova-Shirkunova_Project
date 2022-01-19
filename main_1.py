@@ -568,7 +568,7 @@ def main():
         game()
 
 
-class Let(pygame.sprite.Sprite):
+class Let(pygame.sprite.Sprite):       # препятствия во втором уровне
     def __init__(self, x, speed, filename):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load(filename).convert_alpha()
@@ -582,8 +582,10 @@ class Let(pygame.sprite.Sprite):
         else:
             self.kill()
 
+
 class SecondLevel:
     def __init__(self):
+        self.count_of_sprites = 0
         self.water = pygame.image.load('assets/water_texture.png')
         self.background1 = pygame.image.load('assets/list.jpg')
         self.waterXpos = 0
@@ -599,6 +601,7 @@ class SecondLevel:
         W = -200
         group = pygame.sprite.Group()
         group.add(Let(800, random.randint(1, 4), 'assets/island.png'))
+        self.count_of_sprites += 1
 
         def draw_water():
             screen.blit(self.water, (self.waterXpos, 445))
@@ -614,6 +617,7 @@ class SecondLevel:
             screen.blit(self.background1, (0, 0))
             group.draw(screen)
             screen.blit(ship, ship_rect)
+            draw_text(f"СЧЁТ:{self.count_of_sprites}", font, (255, 0, 0), screen, 30, 30)
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
@@ -623,6 +627,7 @@ class SecondLevel:
                         ship_rect.y -= 70
                 if event.type == pygame.USEREVENT:
                     group.add(Let(900, random.randint(1, 4), 'assets/island.png'))
+                    self.count_of_sprites += 1
             a = collide_isl()
             if a:
                 self.game_over()
