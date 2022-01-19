@@ -733,7 +733,7 @@ class Menu2:
                 next_button = pygame.Rect(350, 250, 200, 50)
                 if next_button.collidepoint((mx, my)):
                     if self.click:
-                        level = SecondLevel(font)
+                        level = SecondLevel()
                         level.game()
                 draw_text('Вы выиграли', self.font, (255, 0, 0), screen, 350, 190)
                 draw_text('к уровню', self.font, (255, 0, 0), screen, 360, 255)
@@ -825,9 +825,30 @@ class Menu:   # меню игры
 
     def options(self):
         running = True
+        x = 10
+        y = 150
+        sl = {}
+        click = False
+        with open('rules.txt', encoding='utf8') as f:
+            f = f.read().split('\n')
+            for i in range(len(f)):
+                sl[f[i]] = (x, y)
+                y += 40
         while running:
             screen.fill((0, 0, 0))
             screen.blit(self.bg, (0, 0))
+            mx, my = pygame.mouse.get_pos()
+            go_back = pygame.Rect(370, 400, 200, 50)
+            if go_back.collidepoint((mx, my)):
+                if click:
+                    self.main_menu()
+            pygame.draw.rect(screen, (0, 0, 0), go_back, 2)
+            draw_text('назад', font, (0, 0, 0), screen, 440, 420)
+
+            click = False
+            for key in sl.keys():
+                a = sl[key]
+                draw_text(key, font, (255, 0, 0), screen, a[0], a[1])
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
@@ -835,6 +856,9 @@ class Menu:   # меню игры
                 if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         running = False
+                if event.type == MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        click = True
 
             pygame.display.update()
             mainClock.tick(60)
