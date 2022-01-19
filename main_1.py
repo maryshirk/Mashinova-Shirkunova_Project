@@ -771,6 +771,7 @@ class Menu:   # меню игры
         self.click = False
         self.font = font
         self.background = pygame.image.load('assets/game_menu.png')
+        self.bg = pygame.image.load('assets/list.jpg')
 
     def main_menu(self):
         while True:
@@ -826,6 +827,7 @@ class Menu:   # меню игры
         running = True
         while running:
             screen.fill((0, 0, 0))
+            screen.blit(self.bg, (0, 0))
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
@@ -836,6 +838,7 @@ class Menu:   # меню игры
 
             pygame.display.update()
             mainClock.tick(60)
+
 
 try:
     menu = Menu(font)
