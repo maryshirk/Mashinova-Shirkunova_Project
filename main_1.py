@@ -9,7 +9,7 @@ from pygame.locals import *
 
 pygame.init()
 size = 900, 600
-screen = pygame.display.set_mode(size) # размер экрана
+screen = pygame.display.set_mode(size)    # размер экрана
 pygame.display.set_caption('Морской бой')
 block_size = 30
 left_margin = 90
