@@ -1,6 +1,7 @@
 import pygame, sys
 import random
 import copy
+from pygame import mixer
 
 mainClock = pygame.time.Clock()
 from pygame.locals import *
@@ -27,6 +28,10 @@ last_hits_list = []
 hit_blocks = set()
 dotted_set = set()
 destroyed_computer_ships = []
+
+mixer.music.load('assets/volnyi-pleschutsya-more-okean-pobereje-41080.wav')  # загрузка музыки
+mixer.music.set_volume(0.5)     # величение или уменьшение громкости
+mixer.music.play(-1)
 
 
 def draw_text(text, font, color, surface, x, y):  # для текста
